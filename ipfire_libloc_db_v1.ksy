@@ -29,8 +29,8 @@ instances:
     repeat-expr: header.countries.length / 8 # 8 = sizeof(country)
   strings:
     type: strzseq
-    pos: header.pool.offset
-    size: header.pool.length
+    pos: header.string_pool.offset
+    size: header.string_pool.length
     repeat: eos
 types:
   header:
@@ -55,7 +55,7 @@ types:
         type: file_range
       - id: countries
         type: file_range
-      - id: pool
+      - id: string_pool
         type: file_range
       - id: signature1_length
         type: u2
@@ -86,7 +86,27 @@ types:
         type: strz
         encoding: utf8
         io: _root._io
-        pos: _root.header.pool.offset + offset
+        pos: _root.header.string_pool.offset + offset
+  as:
+    seq:
+      - id: number
+        type: u4
+      - id: name
+        type: str_ref
+  network:
+    seq:
+      - id: country_code
+        type: str
+        encoding: ascii
+        size: 2
+      - id: padding1
+        size: 2
+      - id: asn
+        type: u4
+      - id: flags
+        type: u2
+      - id: padding2
+        size: 2
   network_node:
     seq:
       - id: child_zero
@@ -95,26 +115,6 @@ types:
         type: u4
       - id: network
         type: u4
-  network:
-    seq:
-      - id: country_code
-        type: str
-        encoding: ascii
-        size: 2
-      - id: padding
-        size: 2
-      - id: asn
-        type: u4
-      - id: flags
-        type: u2
-      - id: padding2
-        size: 2
-  as:
-    seq:
-      - id: number
-        type: u4
-      - id: name
-        type: str_ref
   country:
     seq:
       - id: code
