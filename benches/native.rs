@@ -102,7 +102,7 @@ impl Database {
         assert!(!result.is_null());
         Database(result)
     }
-    fn lookup(&mut self, address: &libc::in6_addr) -> Option<Network> {
+    fn lookup_v6(&mut self, address: &libc::in6_addr) -> Option<Network> {
         let mut result = ptr::null_mut();
         unsafe {
             sys::loc_database_lookup(self.0, address, &mut result);
@@ -147,7 +147,7 @@ fn open(bench: &mut Bencher) {
     });
 }
 
-fn lookup(bench: &mut Bencher) {
+fn lookup_v6(bench: &mut Bencher) {
     let mut context = Context::new();
     let mut database = database(&mut context);
     let addr: Ipv4Addr = ADDR.parse().unwrap();
@@ -156,13 +156,13 @@ fn lookup(bench: &mut Bencher) {
         s6_addr: addr.octets(),
     };
     bench.iter(|| {
-        black_box(database.lookup(black_box(&addr)));
+        black_box(database.lookup_v6(black_box(&addr)));
     })
 }
 
 #[rustfmt::skip]
 benchmark_group!(native_main,
     open,
-    lookup,
+    lookup_v6,
 );
 benchmark_main!(native_main);
