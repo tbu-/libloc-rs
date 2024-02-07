@@ -1,0 +1,33 @@
+[package]
+name = "libloc"
+version = "0.0.0"
+edition = "2021"
+authors = ["Tobias Bucher <tobiasbucher5991@gmail.com>"]
+license = "MIT/Apache-2.0"
+
+[dependencies]
+chrono = "0.4.33"
+memmap2 = { version = "0.9.4", features = ["stable_deref_trait"] }
+ipnet = "2.9.0"
+yoke = "0.7.3"
+yoke-derive = "0.7.3"
+zerocopy = "0.7.32"
+zerocopy-derive = "0.7.32"
+
+[dev-dependencies]
+bencher = "0.1.5"
+libc = "0.2.153"
+
+[workspace]
+members = [
+    ".",
+    "tools",
+]
+
+[[bench]]
+name = "locations"
+harness = false
+
+[[bench]]
+name = "native"
+harness = false
