@@ -1,28 +1,32 @@
+use clap::Parser;
 use libloc::Locations;
-use std::env;
 use std::net::IpAddr;
+use std::path::PathBuf;
+
+/// Look up an IP addres in a libloc database.
+#[derive(Parser, Debug)]
+#[command(about, version)]
+struct Args {
+    /// IP addresses to look up. If none are passed, show meta information
+    /// about the database instead.
+    ip_addrs: Vec<IpAddr>,
+
+    /// Path to database.
+    #[arg(long, default_value = "/usr/share/libloc-location/location.db")]
+    database: PathBuf,
+}
 
 fn main() {
-    let mut args = env::args();
-    args.next();
-    let args: Vec<_> = args.collect();
+    let args = Args::parse();
 
-    let locations = Locations::open("/usr/share/libloc-location/location.db").unwrap();
-    //let locations = Locations::open("/tmp/location.db").unwrap();
-    if args.is_empty() {
+    let locations = Locations::open(&args.database).unwrap();
+    if args.ip_addrs.is_empty() {
         println!("created_at: {}", locations.created_at());
         println!("\nvendor:\n{}", locations.vendor());
         println!("\ndescription:\n{}", locations.description());
         println!("\nlicense:\n{}", locations.license());
     } else {
-        for arg in args {
-            let addr: IpAddr = match arg.parse() {
-                Ok(addr) => addr,
-                Err(e) => {
-                    eprintln!("{}: invalid IP address: {}", arg, e);
-                    continue;
-                }
-            };
+        for addr in args.ip_addrs {
             match locations.lookup(addr) {
                 Some(network) => {
                     let as_name = locations
