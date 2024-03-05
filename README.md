@@ -16,7 +16,7 @@ repository.
 
 # Examples
 
-```
+```rust
 use libloc::Locations;
 
 let locations = Locations::open("example-location.db")?;
