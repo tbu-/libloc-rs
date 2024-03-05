@@ -1,7 +1,7 @@
 [package]
 name = "libloc"
 description = "Read location databases in libloc format"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["Tobias Bucher <tobiasbucher5991@gmail.com>"]
 repository = "https://github.com/tbu-/libloc-rs/"
 keywords = ["geoip", "libloc"]
