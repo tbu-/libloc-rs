@@ -7,7 +7,7 @@ use std::net::IpAddr;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 
-const PATH: &str = "/usr/share/libloc-location/location.db";
+const PATH: &str = "location.db";
 const ADDR: &str = "1.1.1.1";
 
 fn locations() -> Locations {
