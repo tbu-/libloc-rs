@@ -1,9 +1,10 @@
 [package]
 name = "libloc-tools"
 version = "0.0.0"
-edition = "2021"
+publish = false
 authors = ["Tobias Bucher <tobiasbucher5991@gmail.com>"]
 license = "MIT/Apache-2.0"
+edition = "2021"
 
 [dependencies]
 clap = { version = "4.5.1", features = ["derive"] }
