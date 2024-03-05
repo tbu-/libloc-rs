@@ -190,6 +190,8 @@ impl<'a> Network<'a> {
     /// The [ISO 3166-1 alpha-2] country code of the country associated with
     /// this network.
     ///
+    /// `"XX"` if unknown.
+    ///
     /// [ISO 3166-1 alpha-2]: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
     ///
     /// ```
@@ -205,6 +207,8 @@ impl<'a> Network<'a> {
         self.inner.country_code
     }
     /// The [ASN] of this network.
+    ///
+    /// 0 if unknown.
     ///
     /// ```
     /// use libloc::Locations;
