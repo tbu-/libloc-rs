@@ -12,7 +12,7 @@ edition = "2021"
 chrono = "0.4.33"
 memmap2 = { version = "0.9.4", features = ["stable_deref_trait"] }
 ipnet = "2.9.0"
-yoke = "0.7.3"
+yoke = { version = "0.7.3", default-features = false }
 yoke-derive = { version = "0.7.3", optional = true }
 zerocopy = "0.7.32"
 zerocopy-derive = { version = "0.7.32", optional = true }
