@@ -15,7 +15,6 @@ use std::net::Ipv6Addr;
 use std::path::Path;
 use std::str;
 use yoke::Yoke;
-use yoke_derive::Yokeable;
 use zerocopy::FromBytes;
 
 mod format;
@@ -422,7 +421,7 @@ pub struct Locations {
     inner: Yoke<LocationsInner<'static>, Mmap>,
 }
 
-#[derive(Yokeable)]
+#[cfg_attr(feature = "verified", derive(yoke_derive::Yokeable))]
 struct LocationsInner<'a> {
     header: &'a format::Header,
     as_: &'a [format::As],
@@ -431,6 +430,37 @@ struct LocationsInner<'a> {
     countries: &'a [format::Country],
     string_pool: &'a [u8],
     ipv4_network_node: Option<u32>,
+}
+
+#[cfg(not(feature = "verified"))]
+unsafe impl<'a> yoke::Yokeable<'a> for LocationsInner<'static> {
+    type Output = LocationsInner<'a>;
+    fn transform(&'a self) -> &'a LocationsInner<'a> {
+        self
+    }
+    fn transform_owned(self) -> LocationsInner<'a> {
+        self
+    }
+    unsafe fn make(from: LocationsInner<'a>) -> LocationsInner<'static> {
+        // We're just doing mem::transmute() here, however Rust is
+        // not smart enough to realize that Bar<'a> and Bar<'static> are of
+        // the same size, so instead we use transmute_copy
+        assert!(
+            std::mem::size_of::<LocationsInner<'a>>()
+                == std::mem::size_of::<LocationsInner<'static>>()
+        );
+        let ptr: *const LocationsInner<'static> = (&from as *const LocationsInner<'a>).cast();
+        std::mem::forget(from);
+        std::ptr::read(ptr)
+    }
+    fn transform_mut<F: FnOnce(&'a mut LocationsInner<'a>) + 'static>(&'a mut self, f: F) {
+        unsafe {
+            f(std::mem::transmute::<
+                &mut LocationsInner<'static>,
+                &mut LocationsInner<'a>,
+            >(self))
+        }
+    }
 }
 
 impl<'a> LocationsInner<'a> {

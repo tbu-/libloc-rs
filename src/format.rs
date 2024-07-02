@@ -1,26 +1,59 @@
 use zerocopy::byteorder::big_endian as be;
-use zerocopy_derive::AsBytes;
-use zerocopy_derive::FromBytes;
-use zerocopy_derive::FromZeroes;
-use zerocopy_derive::Unaligned;
+
+#[cfg(not(feature = "verified"))]
+use zerocopy::{AsBytes, FromBytes, FromZeroes, Unaligned};
+
+#[cfg(not(feature = "verified"))]
+macro_rules! manual_impl {
+    ($ty:path: $($trait:path),*) => {
+        $(
+            unsafe impl $trait for $ty {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+        )*
+    };
+}
+
+#[cfg(feature = "verified")]
+use zerocopy_derive::{AsBytes, FromBytes, FromZeroes, Unaligned};
+
+#[cfg(feature = "verified")]
+macro_rules! manual_impl {
+    ($ty:ident: $($trait:ident),*) => {};
+}
 
 pub const MAGIC: [u8; 7] = *b"LOCDBXX";
 pub const VERSION: u8 = 1;
 
-#[derive(AsBytes, Clone, Copy, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(StrRef: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct StrRef {
     pub offset: be::U32,
 }
 
-#[derive(AsBytes, Clone, Copy, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(FileRange: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct FileRange {
     pub offset: be::U32,
     pub length: be::U32,
 }
 
-#[derive(AsBytes, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(Header: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct Header {
     pub magic: [u8; 7],
@@ -41,7 +74,12 @@ pub struct Header {
     pub padding: [u8; 32],
 }
 
-#[derive(AsBytes, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(As: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct As {
     pub id: be::U32,
@@ -53,7 +91,12 @@ pub const NETWORK_FLAG_SATTELITE_PROVIDER: u16 = 1 << 1;
 pub const NETWORK_FLAG_ANYCAST: u16 = 1 << 2;
 pub const NETWORK_FLAG_DROP: u16 = 1 << 3;
 
-#[derive(AsBytes, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(Network: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct Network {
     pub country_code: [u8; 2],
@@ -63,14 +106,24 @@ pub struct Network {
     pub _padding2: [u8; 2],
 }
 
-#[derive(AsBytes, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(NetworkNode: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct NetworkNode {
     pub children: [be::U32; 2],
     pub network: be::U32,
 }
 
-#[derive(AsBytes, Debug, FromBytes, FromZeroes, Unaligned)]
+manual_impl!(Country: AsBytes, FromBytes, FromZeroes, Unaligned);
+#[cfg_attr(
+    feature = "verified",
+    derive(AsBytes, FromBytes, FromZeroes, Unaligned)
+)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct Country {
     pub code: [u8; 2],

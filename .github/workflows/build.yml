@@ -28,6 +28,15 @@ jobs:
       - run: cargo test --all
       - run: cargo check --all --benches
 
+  check-verified:
+    name: Check verification feature
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check --all --features verified --tests --benches
+
   check-rustfmt:
     name: Check rustfmt
     runs-on: ubuntu-latest
