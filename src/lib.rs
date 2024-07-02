@@ -1,6 +1,12 @@
 #![doc = include_str!("../README.md")]
 #![warn(missing_docs)]
 
+#[cfg(not(feature = "compat-0-1-1"))]
+compile_error!(
+    "The feature `compat-0-1-1` must be enabled to ensure \
+    forward compatibility with future versions of this crate"
+);
+
 use ipnet::IpNet;
 use ipnet::Ipv4Net;
 use ipnet::Ipv6Net;
@@ -684,6 +690,7 @@ impl Locations {
     ///
     /// # Ok::<(), libloc::OpenError>(())
     /// ```
+    #[cfg(feature = "time")]
     pub fn created_at(&self) -> chrono::DateTime<chrono::offset::Utc> {
         let inner = self.inner.get();
         let created_at = inner.header.created_at.get();

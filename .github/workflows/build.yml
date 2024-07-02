@@ -28,14 +28,15 @@ jobs:
       - run: cargo test --all
       - run: cargo check --all --benches
 
-  check-verified:
-    name: Check verification feature
+  check-features:
+    name: Check different feature settings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo check --all --features verified --tests --benches
+      - run: cargo check --all --no-default-features --features compat-0-1-1 --tests --benches
 
   check-rustfmt:
     name: Check rustfmt
