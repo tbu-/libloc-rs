@@ -9,13 +9,13 @@ license = "MIT/Apache-2.0"
 edition = "2021"
 
 [dependencies]
-chrono = { version = "0.4.33", optional = true }
-memmap2 = { version = "0.9.4", features = ["stable_deref_trait"] }
-ipnet = "2.9.0"
-yoke = { version = "0.7.3", default-features = false }
-yoke-derive = { version = "0.7.3", optional = true }
-zerocopy = "0.7.32"
-zerocopy-derive = { version = "0.7.32", optional = true }
+chrono = { version = "0.4.31", optional = true }
+memmap2 = { version = "0.9", features = ["stable_deref_trait"] }
+ipnet = "2.0"
+yoke = { version = "0.7", default-features = false }
+yoke-derive = { version = "0.7", optional = true }
+zerocopy = "0.7.24"
+zerocopy-derive = { version = "0.7.24", optional = true }
 
 [features]
 default = ["compat-0-1-1", "time"]
